@@ -20,11 +20,21 @@ pipeline {
                 '''
             }
         }
-    }
-    post {
-        always{
-            junit 'test-results/junit.yml'
-         }
-    }
 
+        stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                    test -f build/index.html
+                    npm test
+                '''
+            }
+        }
+    }
 }
